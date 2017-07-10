@@ -1,0 +1,10 @@
+main->创建了AppDelegate->
+appdelegate创建了windows，init viewcontroller->
+init vc的时候回调用initWithNibName：bundle，加载xib文件编译过而来的nib文件，[所有的xib文件编译为nib,再被拷贝到程序包]
+然后window绑定vc->
+
+
+或者通过代码展示view，在appDelegate中self.window.rootViewController = vc;
+这就话就是调用window的setRootViewController方法，调用之后会立刻加载VC中的属性view,设定appDelegate中的rootViewController的值以及将view加载到window中，若此刻VC属性中的view为nil,那么会调用VC中的loadView方法。
+
+
