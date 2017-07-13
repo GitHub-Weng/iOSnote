@@ -1,11 +1,68 @@
-KSAppDelegate->
+@KSAppDelegate->
+
 didFinishLaunchingWithOptions->
-[self initMainUIWithInfo:info];
+[self enterMainUIWithLaunchOptions:launchOptions]->
+[self initMainUIWithInfo:info];//进入app界面主流程处理->  //(NSDictionary*)info
+//reLaunchFromSafeMode中也有调用
 
+
+
+
+
+
+@KSAppDelegate+MainUI.m->
+
+initMainUIWithInfo->
+ if (![WnsConfigManager sharedInstance].appConfig.kSongSetting.haveShowGuidePages)
+    {
+        [self showGuidePages];
+    }
 KSAppDelegate+MainUI.m->showGuidePages
-
-
-void showGuidePages{
-  [[KSVideoGuidePageVC alloc] init];
-  
+//reLaunchFromSafeMode中[WnsConfigManager sharedInstance].appConfig.kSongSetting.haveShowGuidePages = YES;showHomeView中也是
+默认的话是showGuidePages
+初始化videoGuidePageVC,并且在本地实现了该VC的delegate
+{
+    KSVideoGuidePageVC *videoGuidePageVC = [[KSVideoGuidePageVC alloc] init];
+    videoGuidePageVC.delegate = self;  
+    //存在问题，KSAppDelegate+MainUI.m并没有实现VideoGuideDelegate中的方,-(void)videoGuideDidFinish:(id)sender;
+    //想想这个也不是很重要，这个是要在播完之后做一些事情的时候才需要写上去
+    //后面发现其实他是有实现的
+    //#pragma mark - DismissSplashAdDelegate  
+    //-(void)videoGuideDidFinish:(id)sender中当结束的时候开始登陆的判断，//KSLoginManager isNeedUserLogin
+    
+    //里面有一个需要注意的点，KSVideoGuidePageVC是在KSWebGuidePagesVC.h中，因为引导除了视频之外还有其他的引导信息，
+    //在里面也有定义了，比如GuideInfoView，而且这些引导信息需要分类型，分启动还是在设置中启动
+    
+    
+    
+    self.window.rootViewController = videoGuidePageVC;
 }
+
+
+
+
+
+KSWebViewController是属于点击官网前往的
+
+
+
+
+#pragma mark - DismissSplashAdDelegate
+-(void)videoGuideDidFinish:(id)sender
+{
+    KLog(@"[MainUI]%@", NSStringFromSelector(_cmd));
+
+    self.shouldGotoSelection = NO;
+    if([[KSLoginManager sharedInstance] isNeedUserLogin])
+    {        
+        [self showLoginView];
+    }
+}
+
+
+
+
+
+
+
+
