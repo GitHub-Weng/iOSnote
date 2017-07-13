@@ -1,0 +1,11 @@
+KSAppDelegate->
+didFinishLaunchingWithOptions->
+[self initMainUIWithInfo:info];
+
+KSAppDelegate+MainUI.m->showGuidePages
+
+
+void showGuidePages{
+  [[KSVideoGuidePageVC alloc] init];
+  
+}
