@@ -61,8 +61,20 @@ KSWebViewController是属于点击官网前往的
 
 
 
+KSAboutKSongVC中的tableview被选中的时候触发
+else if ([INDEXPTH_ROW_Guide_Video isEqualToString:indexString])
+    {
+        KSVideoGuidePageVC *videoGuidePageVC = [[KSVideoGuidePageVC alloc] initWithPageType:SETTING_WELCOME];
+        
+        [[KSNavigationManager sharedManager] pushVC:videoGuidePageVC animated:YES];
+    }
 
 
 
 
+第1种模式AVLayerVideoGravityResizeAspect是按原视频比例显示，是竖屏的就显示出竖屏的，两边留黑；
+第2种AVLayerVideoGravityResizeAspectFill是以原比例拉伸视频，直到两边屏幕都占满，但视频内容有部分就被切割了；
+第3种AVLayerVideoGravityResize是拉伸视频内容达到边框占满，但不按原比例拉伸，这里明显可以看出宽度被拉伸了。
 
+
+KSVideoGuidePageVC    ---createAVPlayer中的方法要看看
