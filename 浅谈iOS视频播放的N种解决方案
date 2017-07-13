@@ -1,0 +1,53 @@
+浅谈iOS视频播放的N种解决方案
+http://www.jianshu.com/p/3618a9116660
+
+现总结下：
+1.基于MediaPlayer框架的MPMoviePlayerViewController几行代码可以实现播放功能，但是界面很不友好，ios9之后就废弃了
+2.基于AVFoundation的AVKit，解决视频播放的高级对象，性能好，但支持的格式有限。
+3.基于ffmpeg二次开发的MobileVLCKit[1]支持多种格式，需要配置
+4.使用ffmpeg和live555[2]
+
+1. <MediaPlayer/MediaPlayer.h>
+
+在MediaPlayer框架中，如果你足够懒，那么利用MPMoviePlayerViewController你便可以三行代码完成你的播放功能。
+但是做出来的界面很差，好在Apple官方还给我们提供了一个类MPMoviePlayerController，通过这个类我们可以自定义播放器的UI，
+在这里推荐一款由国内工程师开源的基于MPMoviePlayerController播放器KRVideoPlayer,相信小伙伴们的大多数数的需求可以完美的解决。
+缺陷：不能很好实现深度定制播放器
+
+
+2. AVKit
+
+MPMoviePlayerController在iOS9被Apple废弃了；
+当我们的需求需要深度定制播放器的时候，MPMoviePlayerController就显得力不从心了，
+比如笔者之前在做一个配音软件时，需要只播放视频的画面，而不需要视频的声音，同时还需要开启音频的录制，以及另开一个音频播放器播放背景音效。
+鉴于<MediaPlayer/MediaPlayer.h>的局限性，新的框架应运而生--AVKit。
+
+AVKit是建立在AVFoundation上，解决视频播放的高级对象。AVFoundation的性能好，同时播放100部视频而丝毫不卡顿！
+无论是对于本地视频还是网络在线点播，AVFoundation表现都异常优异。
+缺陷：不支持一些非常规的视频
+
+
+3.MobileVLCKit视频播放框架
+优点：基于ffmpeg二次开发，支持多格式视频
+MobileVLCKit的静态库非常大，解压下来以后差不多有600+MB，但是编译之后只有几M而已，所以放心使用吧。
+使用之前需要进行额外的配置，添加依赖框架，MobileVLCKit.framework,修改编译选项,修改Framework Search Paths使工程找到框架。
+
+
+
+4.使用ffmpeg和live555
+
+
+[1]VLC:VLC多媒体播放器（英语：VLC media player，最初为VideoLAN Client，是VideoLAN计划的开放源代码多媒体播放器。）
+支持众多音频与视频解码器及文件格式，并支持DVD影音光盘、VCD影音光盘及各类流协议。它也能作为单播或多播的流服务器在IPv4或IPv6的高速网络连接下使用。
+调用FFmpeg计划的解码器与libdvdcss程序库使其有播放多媒体文件及加密DVD影碟的功能。
+
+[2]FFmpeg是一个自由软件，可以运行音频和视频多种格式的录影、转换、流功能，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，
+以及libavformat——一个音频与视频格式转换库。“FFmpeg”这个单词中的“FF”指的是“Fast Forward”,
+MPEG正式审核程序是Moving Picture Experts Group的简称。
+这个名字本来的含义是指一个研究视频和音频编码标准的“动态图像专家组”组织，成立于1988年，致力开发视频、音频的压缩编码技术。
+现在我们所说的MPEG泛指由该小组制定的一系列视频编码标准正式审核程序。
+
+live555是一个为流媒体提供解决方案的跨平台的C++开源项目，它实现了对标准流媒体传输是一个为流媒体提供解决方案的跨平台的C++开源项目，
+它实现了对标准流媒体传输协议如RTP/RTCP、RTSP、SIP等的支持。Live555实现了对多种音视频编码格式的音视频数据的流化、接收和处理等支持，
+包括MPEG、H.263+、DV、JPEG视频和多种音频编码。同时由于良好的设计，Live555非常容易扩展对其他格式的支持。
+目前，Live555已经被用于多款播放器的流媒体播放功能的实现，如VLC(VideoLan)、MPlayer。
