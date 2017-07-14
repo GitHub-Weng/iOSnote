@@ -1,0 +1,37 @@
+视图初始化，是否使用老版本
+建立子视图
+
+登陆按钮点击之后记日记
+/*! @brief 记日志
+ *
+ *  @param module 模块区分，日志里展示为[M:module]
+ *  @param extDict 日志里展示为[key:value]...
+ */
+- (void)log:(int)level file:(const char *)file func:(const char *)func line:(int)line module:(NSString*)module EFDict:(NSDictionary *)extDict msg:(NSString *)fmt, ...NS_FORMAT_FUNCTION(7,8);
+
+- (void)log:(int)level file:(const char *)file func:(const char *)func line:(int)line module:(NSString*)module EFDict:(NSDictionary *)extDict fullmsg:(NSString *)fullmsg;
+
+
+之后得到一个loginManager的实例，调用qqLogin方法，传入一个实现了KSLoginManagerDelegate的delegate,
+为这个loginManager实例重新赋值，比如登陆类型成为QQ登陆，之后利用第三方包装库打开QQ登陆的界面
+
+loginManager需要实现QQOpenWrapperDelegate协议
+
+@protocol QQOpenWrapperDelegate <NSObject>
+@optional
+- (void)QQLogInStart:(QQOpenWrapper *)aWrapper;
+- (void)QQInDidFail:(QQOpenWrapper *)aWrapper error:(NSError *)error;
+- (void)QQLogInDidSuccess:(QQOpenWrapper *)aWrapper;
+- (void)QQLogInDidLogOut:(QQOpenWrapper *)aWrapper;
+@end
+
+
+moreLoginView是一个UIView,默认不开启，只是为了后来可以扩展
+
+
+
+
+
+
+
+
