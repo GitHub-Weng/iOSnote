@@ -1,0 +1,33 @@
+一、使用dispatch_once来执行只需要运行一次的线程安全代码
+假设写一个ViewController类的单例方法
+
++ (id)sharedInstance{
+    static ViewController *vc = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        vc = [ViewController new];
+    });
+    return vc;
+}
+注: 使用dispatch_once 可以简化代码并且彻底保证线程安全，根本无需担心加锁或同步。
+采用dispatch_once方式来实现sharedInstance方法的速度几乎是@synchronized的两倍。
+
+
+
+使用dispatch_after实现延迟执行某动作，时间并不是很精确，实际上是过多久将Block追加到main Queue中，而不是执行该动作，
+如果此时main queue中的任务很多，没有执行完毕，那么新添加的这个动作就要继续推迟。 
+如果对时间的精确度没有高要求，只是为了推迟执行，那么使用dispatch_after还是很不错的。
+
+**正确创建dispatch_time_t**
+用dispatch_after的时候就会用到dispatch_time_t变量，但是如何创建合适的时间呢？
+答案就是用**dispatch_time**函数，其原型如下：
+
+dispatch_time_t dispatch_time ( dispatch_time_t when, int64_t delta );
+
+第一个参数一般是**DISPATCH_TIME_NOW**，表示从现在开始。
+那么第二个参数就是真正的延时的具体时间。
+这里要特别注意的是，**delta**参数是“**纳秒！**”，就是说，延时1秒的话，delta应该是“1000000000”.
+
+
+dispatch_apply的作用是在一个队列（串行或并行）上“运行”多次block，其实就是简化了用循环去向队列依次添加block任务。
+
