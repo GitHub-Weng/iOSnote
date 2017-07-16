@@ -24,3 +24,7 @@ CMTimeMake(60, 30);
 CMTimeMake(30, 15);
 在這兩個例子中所表達在影片中的時間都皆為2秒鐘,
 但是影隔播放速率則不同, 相差了有兩倍.
+
+
+https://segmentfault.com/a/1190000004049416
+AVFoundation Programming Guide
