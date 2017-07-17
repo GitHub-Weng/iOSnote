@@ -7,9 +7,13 @@ ios编程
 4 当视图控制器从NIB文件中创建师徒层次结构，不需要覆盖loadview方法，默认的loadview会自动处理NIB文件中包含的视图层次结构。
 
 5 不用VC也可以，直接将视图初始化之后加载到windows中作为子view。
-6 用VC的话有两种方式，一种是使用xib,另外一种是纯代码编写，xib的话需要先将view和VC关联，具体的方式是先设定xib文件中的File’s owner，之后在appDelegate使用到VC的initWithNibName:vcname:bundle，会加载xib文件，然后初始化视图，这时会将VC放到File’s owner中，这也就是为什么它是占位符的原因，便可以将组件outlet和VC捆绑，然后设置window的rootViewController。
+6 用VC的话有两种方式，一种是使用xib,另外一种是纯代码编写，xib的话需要先将view和VC关联，
+具体的方式是先设定xib文件中的File’s owner，之后在appDelegate使用到VC的initWithNibName:vcname:bundle，
+会加载xib文件，然后初始化视图，这时会将VC放到File’s owner中，这也就是为什么它是占位符的原因，便可以将组件outlet和VC捆绑，
+然后设置window的rootViewController。
 
-7 纯代码的则是直接VC的init方法，之后设置window的rootViewController，不过两者的区别是前者不需要重写loadView，后者需要。loadView主要是用来window设定rootViewController时用到的，如果view为nil,则调用loadView来为view初始化。
+7 纯代码的则是直接VC的init方法，之后设置window的rootViewController，不过两者的区别是前者不需要重写loadView，后者需要。
+loadView主要是用来window设定rootViewController时用到的，如果view为nil,则调用loadView来为view初始化。
 
 8 将插座变量设定为弱变量是一种编程约定。
 
