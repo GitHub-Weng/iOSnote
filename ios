@@ -8,3 +8,38 @@ init vc的时候回调用initWithNibName：bundle，加载xib文件编译过而�
 这就话就是调用window的setRootViewController方法，调用之后会立刻加载VC中的属性view,设定appDelegate中的rootViewController的值以及将view加载到window中，若此刻VC属性中的view为nil,那么会调用VC中的loadView方法。
 
 
+contentOffset 是scrollview当前显示区域顶点相对于frame顶点的偏移量，比如上个例子你拉到最下面，
+contentoffset就是(0 ,-480)，也就是y偏移了480
+contentInset 是scrollview中contentView.frame.origin与scrollview.frame.origin的关系，
+比如contentView的frame为(0,30,320,480),那么contentInset则为(0, 30)
+
+UINavigationBar 使用总结
+http://www.jianshu.com/p/f0d3df54baa6
+
+----------------------------------------------------------------------------------
+
+回头看之UITableView-(基本代理方法及复用原理)
+http://www.jianshu.com/p/24d80254184f
+
+调用numberOfSection获得 A个section
+先调用numberOfRowsInSection获得B个cell,再调用heightForRowB次。如此循环A次
+
+循环调用cellForRow和heightForRow，直到cell的个数充满当前屏幕。
+这就是一个普通的tableView一开始加载数据的过程，有几点需要说明：
+
+如果你展示在每个cell上的内容是相对固定的，准确点说是每个cell的高度是固定的，那么heightForRow是不建议让代理去实现的，
+而是通过tableView的rowHeight属性来代替，当数据量比较大，比如说有10000个(其实只要 >= 2)cell时，
+tableView只需要10000*rowHeight就知道应该准备的空间大小了，而不是调用一个方法10000次通过累加获知需要的大小。
+而且你懂的，要想获取一个cell的高度并不是那么容易的事，尤其是在自动布局出现之前，你需要计算各种字符串的所占空间的大小，
+这对性能是相当大的损耗。
+如果每个cell高度确实不一样，数据量又很大时该怎么解决这个性能问题呢，iOS7之后系统提供了估算高度的办法，
+estimatedRowHeight和- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+//下文再提到该方法用estimateHeightForRow代替,这样每次在加载数据之前，tableView不再通过heightForRow消耗大量的性能获取空间大小了，
+而是通过在estimateRowHeight或者estimatedHeightForRow不需要费劲计算就能获取的一个估算值来获取一个大体的空间大小，
+等到真正的加载数据时才根据获取真实数据，并做出相应的调整，比如contentSize或者scrollIndicator的位置。
+关于动态计算高度，推荐羊教授的一篇文章优化UITableViewCell高度计算的那些事
+这些方法的调用在保证大顺序不变的情况下，每个方法的调用次数是不一定的，每个iOS版本又不一样，你如果想知道可以动手去试验一下。
+尤其是在iOS8,它认为cell会随时变化，所以一滑动就重新计算cell的高度。
+这些方法的调用其实也是有插曲的，比如调用了reloadData之后，tableView只会调用能让它知道所需空间大小的代理方法，
+然后立马执行reloadData之后的语句，也就说cellForRow并不会在reloadData之后紧接着执行。所以reloadData之后尽量避免对数据源数组的操作。
+
